@@ -1,0 +1,293 @@
+/* src/components/StrategyScreen.css */
+
+/* Общие стили */
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #121212; /* Тёмный фон для премиального вида */
+    color: #FFFFFF;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 50px;
+  }
+  
+  /* Заголовок */
+  .header {
+    display: flex;
+    flex-direction: column; /* Вертикальное расположение */
+    align-items: flex-start; /* Выравнивание по левому краю */
+    margin-bottom: 8px; /* Отступ снизу */
+  }
+  
+  .back-button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 4px; /* Отступ снизу между кнопкой и заголовком */
+    padding: 0;
+  }
+  
+  .back-button:hover {
+    text-decoration: underline;
+  }
+  
+  .header-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #FFFFFF; /* Белый цвет */
+    margin: 0;
+  }
+  
+  /* Подзаголовок */
+  .sub-header-text {
+    font-size: 14px;
+    color: #DDDDDD;
+    margin-bottom: 24px; /* Отступ снизу для разделения с остальным контентом */
+    line-height: 1.5; /* Улучшенная читаемость */
+    text-align: left; /* Выравнивание по левому краю */
+    margin-left: 0; /* Убираем возможные отступы слева */
+  }
+  
+  /* Секции */
+  .section {
+    margin-bottom: 24px;
+  }
+  
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: 12px;
+  }
+  
+  /* Кнопка изменения матчей */
+  .edit-matches-button {
+    align-self: flex-start;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden; /* Для корректного отображения градиента с закруглёнными углами */
+    margin-bottom: 8px;
+  }
+  
+  .edit-gradient {
+    background: linear-gradient(90deg, rgb(175, 83, 255), rgb(110, 172, 254));
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+  }
+  
+  .edit-matches-button-text {
+    color: #FFF;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  /* Подсказки */
+  .hint-text {
+    font-size: 12px;
+    color: #AAAAAA;
+    margin-top: 4px;
+  }
+  
+  /* Выбор уровня риска */
+  .risk-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .risk-card {
+    flex: 1;
+    margin: 0 4px;
+    background-color: #1E1E1E;
+    border-radius: 12px;
+    padding: 16px;
+    align-items: center;
+    border: 1px solid #333333;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, background-color 0.2s;
+    cursor: pointer;
+  }
+  
+  .risk-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .selected-risk-card {
+    border-color: #9A7FFF;
+    background-color: #2A2A2A;
+    box-shadow: 0px 4px 10px rgba(154, 127, 255, 0.3);
+  }
+  
+  .risk-icon {
+    margin-bottom: 8px;
+  }
+  
+  .risk-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin: 0;
+  }
+  
+  .risk-description {
+    font-size: 12px;
+    color: #BBBBBB;
+    text-align: center;
+    margin-top: 4px;
+  }
+  
+  .chosen-risk-text {
+    font-size: 12px;
+    color: #CCCCCC;
+    margin-top: 8px;
+  }
+  
+  /* Бюджет */
+  .budget-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .budget-input {
+    flex: 1;
+    height: 40px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 0 8px;
+    margin-right: 8px;
+    font-size: 16px;
+    background-color: #1E1E1E;
+    color: #FFFFFF;
+  }
+  
+  .budget-input::placeholder {
+    color: #888;
+  }
+  
+  .currency-text {
+    font-size: 16px;
+    color: #FFFFFF;
+  }
+  
+  /* Слайдер */
+  .slider-container {
+    position: relative;
+    height: 40px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .gradient-slider-track {
+    position: absolute;
+    height: 4px;
+    border-radius: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, rgb(175, 83, 255), rgb(110, 172, 254));
+    z-index: 1;
+  }
+  
+  .slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: transparent;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    margin-top: -6px; /* Центрирование ползунка */
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #FFFFFF;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+  }
+  
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -8px;
+  }
+  
+  .slider-label {
+    font-size: 12px;
+    color: #999999;
+  }
+  
+  /* Кнопка действия */
+  .calculate-button {
+    width: 100%;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    overflow: hidden; /* Для корректного отображения градиента с закруглёнными углами */
+    margin-bottom: 16px;
+    cursor: pointer;
+  }
+  
+  .calculate-button:disabled {
+    opacity: 0.5; /* Уменьшаем прозрачность при отключении */
+    cursor: not-allowed;
+  }
+  
+  .calculate-gradient {
+    background: linear-gradient(90deg, rgb(175, 83, 255), rgb(110, 172, 254));
+    padding: 14px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  
+  .calculate-button-text {
+    color: #FFF; /* Белый текст для контраста с градиентом */
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  /* Информация о текущем выборе */
+  .selection-info {
+    font-size: 12px;
+    color: #DDDDDD;
+    text-align: center;
+  }
+  

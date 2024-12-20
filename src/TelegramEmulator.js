@@ -1,4 +1,8 @@
+// src/TelegramEmulator.js
+
 const TelegramEmulator = {
+  WebApp: {
+    initData: '',
     initDataUnsafe: {
       user: {
         id: 12345,
@@ -24,7 +28,9 @@ const TelegramEmulator = {
       setText: (text) => console.log(`Main button text set to: ${text}`),
       onClick: (callback) => console.log("Main button clicked"),
     },
-  };
-  
-  export default TelegramEmulator;
-  
+    ready: () => console.log('WebApp ready'),
+    expand: () => console.log('WebApp expanded'),
+  },
+};
+
+export default TelegramEmulator;

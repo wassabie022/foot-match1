@@ -1,11 +1,14 @@
+// src/components/FootballMatchesScreen.js
+
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
 import './FootballMatchesScreen.css';
 import { FaFutbol, FaCheckCircle, FaCircle } from 'react-icons/fa';
 import axios from 'axios';
 import TelegramEmulator from '../TelegramEmulator'; // Импорт эмулятора
 
 const GRADIENT_COLORS = ['rgb(175, 83, 255)', 'rgb(110, 172, 254)'];
-const Telegram = window.Telegram || TelegramEmulator; // Проверка среды выполнения
+const Telegram = window.Telegram || TelegramEmulator.WebApp; // Проверка среды выполнения
 
 const sheetId = '1R2k3qsM2ggajeBu8IrP1d-LAolneeqcTrDNV_JHqtzc';
 const apiKey = 'AIzaSyDrCLUPUlzlNoj4KJlFAnP2KZrt8MXZbUE';
@@ -50,6 +53,8 @@ const FootballMatchesScreen = () => {
   const [selectedCount, setSelectedCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate(); // Инициализируем navigate
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -119,7 +124,7 @@ const FootballMatchesScreen = () => {
 
   useEffect(() => {
     fetchData();
-    if (Telegram) {
+    if (Telegram.MainButton) {
       Telegram.MainButton.show();
       Telegram.MainButton.setText('Готово');
       Telegram.MainButton.onClick(() => {
@@ -263,9 +268,7 @@ const FootballMatchesScreen = () => {
           <button
             className={`button ${selectedCount <= 0 ? 'button-disabled' : ''}`}
             disabled={selectedCount <= 0}
-            onClick={() => {
-              console.log('Нажата кнопка Далее');
-            }}
+            onClick={() => navigate('/strategy', { state: { matchesCount: selectedCount } })} // Навигация на вторую страницу с передачей данных
           >
             <div
               className="gradient"
