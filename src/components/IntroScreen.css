@@ -1,0 +1,58 @@
+.intro-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #000000; /* Чёрный фон */
+}
+
+.intro-background {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-image: url('/assets/intro-image.png'); /* Путь к изображению */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover; /* Полностью покрывает экран */
+}
+
+.intro-overlay {
+  position: absolute;
+  bottom: 40px; /* Расположение кнопки снизу */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.intro-button-container {
+  width: 308px;
+  height: 50px;
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  background: none;
+}
+
+.intro-gradient {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgb(175, 83, 255), rgb(110, 172, 254));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  transition: opacity 0.3s ease;
+}
+
+.intro-gradient:hover {
+  opacity: 0.9;
+}
+
+.intro-button-text {
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: bold;
+}
