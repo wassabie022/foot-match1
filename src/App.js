@@ -4,6 +4,7 @@ import LoadingScreen from './components/LoadingScreen';
 import IntroScreen from './components/IntroScreen';
 import FootballMatchesScreen from './components/FootballMatchesScreen';
 import StrategyScreen from './components/StrategyScreen';
+import './App.css'; // Ваш общий CSS, если есть
 
 function App() {
   const [isLoading, setIsLoading] = useState(true); // Экран загрузки

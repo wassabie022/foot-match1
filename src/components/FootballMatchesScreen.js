@@ -1,14 +1,14 @@
 // src/components/FootballMatchesScreen.js
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
+import { useNavigate } from 'react-router-dom';
 import './FootballMatchesScreen.css';
 import { FaFutbol, FaCheckCircle, FaCircle } from 'react-icons/fa';
 import axios from 'axios';
-import TelegramEmulator from '../TelegramEmulator'; // Импорт эмулятора
+import TelegramEmulator from '../TelegramEmulator';
 
 const GRADIENT_COLORS = ['rgb(175, 83, 255)', 'rgb(110, 172, 254)'];
-const Telegram = window.Telegram || TelegramEmulator.WebApp; // Проверка среды выполнения
+const Telegram = window.Telegram || TelegramEmulator.WebApp;
 
 const sheetId = '1R2k3qsM2ggajeBu8IrP1d-LAolneeqcTrDNV_JHqtzc';
 const apiKey = 'AIzaSyDrCLUPUlzlNoj4KJlFAnP2KZrt8MXZbUE';
@@ -54,14 +54,19 @@ const FootballMatchesScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate(); // Инициализируем navigate
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await axios.get(url);
+      console.log('Полученные данные:', response.data);
       const json = response.data;
+
+      if (!json.values) {
+        throw new Error('Нет данных в ответе API');
+      }
 
       const [headers, ...rows] = json.values;
 
@@ -124,7 +129,7 @@ const FootballMatchesScreen = () => {
 
   useEffect(() => {
     fetchData();
-    if (Telegram.MainButton) {
+    if (Telegram && Telegram.MainButton) {
       Telegram.MainButton.show();
       Telegram.MainButton.setText('Готово');
       Telegram.MainButton.onClick(() => {
@@ -169,7 +174,7 @@ const FootballMatchesScreen = () => {
   }, [searchText, matchesData, selectedDay]);
 
   const renderLeagueHeader = (league) => (
-    <div className="league-header" key={league.league}>
+    <div className="league-header" key={`league-${league.league}`}>
       <FaFutbol size={20} color="#ffffff" />
       <span className="league-header-text">{league.league}</span>
     </div>
@@ -196,7 +201,7 @@ const FootballMatchesScreen = () => {
   const renderMatch = (match, league) => (
     <div
       className="match-container"
-      key={match.id}
+      key={`${league.league}-match-${match.id}`}
       onClick={() => toggleFavorite(league.league, match.id)}
     >
       <div className="match-row">
@@ -257,7 +262,7 @@ const FootballMatchesScreen = () => {
     return (
       <>
         {filteredData.map((league) => (
-          <div key={league.league}>
+          <div key={`league-section-${league.league}`}>
             {renderLeagueHeader(league)}
             {league.data.map((match) => renderMatch(match, league))}
             <div className="separator"></div>
@@ -268,7 +273,7 @@ const FootballMatchesScreen = () => {
           <button
             className={`button ${selectedCount <= 0 ? 'button-disabled' : ''}`}
             disabled={selectedCount <= 0}
-            onClick={() => navigate('/strategy', { state: { matchesCount: selectedCount } })} // Навигация на вторую страницу с передачей данных
+            onClick={() => navigate('/strategy', { state: { matchesCount: selectedCount } })}
           >
             <div
               className="gradient"
@@ -309,7 +314,7 @@ const FootballMatchesScreen = () => {
                 selectedDay.label === day.label && selectedDay.date === day.date;
               return (
                 <div
-                  key={index}
+                  key={`day-${index}`}
                   className={`day-button ${isActive ? 'active-day-button' : ''}`}
                   onClick={() => setSelectedDay(day)}
                 >
