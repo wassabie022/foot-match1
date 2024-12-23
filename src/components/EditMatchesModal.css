@@ -1,260 +1,260 @@
 /* src/components/EditMatchesModal.css */
 
 .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(18, 18, 18, 0.95);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modalContainer {
-    background-color: #1F1F1F;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 10px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    max-height: 90vh;
-  }
-  
-  .modalHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background-color: #1F1F1F;
-  }
-  
-  .modalTitle {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-  }
-  
-  .closeButton {
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  
-  /* Вкладки */
-  .tabContainer {
-    display: flex;
-    border-bottom: 1px solid #333;
-  }
-  
-  .tabButton {
-    flex: 1;
-    padding: 10px;
-    text-align: center;
-    position: relative;
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  
-  .tabButton.active .tabIndicator {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(180deg, rgba(175, 83, 255, 1), rgba(110, 172, 254, 1));
-    border-radius: 2px;
-  }
-  
-  .tabIndicator {
-    height: 4px;
-    width: 100%;
-    background: linear-gradient(180deg, rgba(175, 83, 255, 1), rgba(110, 172, 254, 1));
-    border-radius: 2px;
-    margin-top: 2px;
-  }
-  
-  /* Контейнер матчей */
-  .matchesContainer {
-    flex: 1;
-    margin: 10px;
-    border-radius: 10px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 10px;
-    backdrop-filter: blur(10px);
-  }
-  
-  /* Заголовок выбранных матчей */
-  .selectedHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #1F1F1F;
-    border-radius: 5px;
-  }
-  
-  .selectedCount {
-    font-size: 16px;
-    font-weight: 500;
-  }
-  
-  .clearAllButton {
-    background: none;
-    border: none;
-    color: #E53935;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  
-  /* Список матчей */
-  .matchList {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0;
-    overflow-y: auto;
-    max-height: 50vh;
-  }
-  
-  .matchItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 16px;
-    background-color: transparent;
-    border-radius: 8px;
-    margin-bottom: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .matchItem:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  .matchInfo {
-    flex: 1;
-    margin-right: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Центрирование текста по вертикали */
-  }
-  
-  .matchLabel {
-    display: block;
-    font-family: 'DM Sans', sans-serif;
-  }
-  
-  .matchDetails {
-    display: block;
-    font-size: 12px;
-    color: #888;
-    font-family: 'DM Sans', sans-serif;
-  }
-  
-  .removeButton {
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  /* Поле поиска */
-  .searchContainer {
-    display: flex;
-    align-items: center;
-    margin: 10px;
-    padding: 5px 10px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
-    border-radius: 5px;
-    position: relative;
-  }
-  
-  .searchInput {
-    flex: 1;
-    padding: 10px 30px 10px 10px; /* Отступы для иконки */
-    border: none;
-    border-radius: 5px;
-    background: transparent;
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-  }
-  
-  .searchInput::placeholder {
-    color: #888;
-  }
-  
-  .searchIcon {
-    position: absolute;
-    right: 10px;
-    color: #fff;
-    pointer-events: none; /* Иконка не перехватывает события клика */
-  }
-  
-  /* Кнопка сохранения */
-  .saveButton {
-    margin: 15px;
-    padding: 15px;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(180deg, rgba(175, 83, 255, 1), rgba(110, 172, 254, 1));
-    cursor: pointer;
-  }
-  
-  .saveButtonText {
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-  }
-  
-  /* Тексты для пустых списков, загрузки и ошибок */
-  .emptyText,
-  .loadingText,
-  .errorText {
-    text-align: center;
-    margin: 20px;
-    font-family: 'DM Sans', sans-serif;
-  }
-  
-  .emptyText {
-    color: #888;
-  }
-  
-  .loadingText {
-    color: #fff;
-  }
-  
-  .errorText {
-    color: #E53935;
-  }
-  
-  /* Спиннер загрузки */
-  .loadingContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .spinner {
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top: 4px solid #1E88E5;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 10px;
-  }
-  
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(18, 18, 18, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContainer {
+  background-color: #1F1F1F;
+  width: 600px; /* Фиксированная ширина */
+  height: 80vh; /* Фиксированная высота */
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #1F1F1F;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Вкладки */
+.tabContainer {
+  display: flex;
+  border-bottom: 1px solid #333;
+}
+
+.tabButton {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  position: relative;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tabButton.active .tabIndicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(180deg, rgba(175, 83, 255, 1), rgba(110, 172, 254, 1));
+  border-radius: 2px;
+}
+
+.tabIndicator {
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(180deg, rgba(175, 83, 255, 1), rgba(110, 172, 254, 1));
+  border-radius: 2px;
+  margin-top: 2px;
+}
+
+/* Контейнер матчей */
+.matchesContainer {
+  flex: 1;
+  margin: 10px;
+  border-radius: 10px;
+  overflow-y: auto; /* Добавляем вертикальную прокрутку */
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+  backdrop-filter: blur(10px);
+}
+
+/* Заголовок выбранных матчей */
+.selectedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #1F1F1F;
+  border-radius: 5px;
+}
+
+.selectedCount {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.clearAllButton {
+  background: none;
+  border: none;
+  color: #E53935;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Список матчей */
+.matchList {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  overflow-y: auto;
+  max-height: 50vh;
+}
+
+.matchItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: transparent;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.matchItem:hover {
+  /* Удалено изменение фона при наведении */
+  background-color: transparent;
+}
+
+.matchInfo {
+  flex: 1;
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Центрирование текста по вертикали */
+}
+
+.matchLabel {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.matchDetails {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Поле поиска */
+.searchContainer {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+  padding: 5px 10px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  border-radius: 5px;
+  position: relative;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 10px 30px 10px 10px; /* Отступы для иконки */
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.searchInput::placeholder {
+  color: #888;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 10px;
+  color: #fff;
+  pointer-events: none; /* Иконка не перехватывает события клика */
+}
+
+/* Кнопка сохранения */
+.saveButton {
+  margin: 15px;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(175, 83, 255, 1), rgba(110, 172, 254, 1));
+  cursor: pointer;
+}
+
+.saveButtonText {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Тексты для пустых списков, загрузки и ошибок */
+.emptyText,
+.loadingText,
+.errorText {
+  text-align: center;
+  margin: 20px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.emptyText {
+  color: #888;
+}
+
+.loadingText {
+  color: #fff;
+}
+
+.errorText {
+  color: #E53935;
+}
+
+/* Спиннер загрузки */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #1E88E5;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

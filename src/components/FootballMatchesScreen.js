@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './FootballMatchesScreen.css';
-import { FaFutbol, FaCheckCircle, FaCircle } from 'react-icons/fa';
+import { FaFutbol, FaCheckCircle, FaCircle, FaSearch } from 'react-icons/fa'; // Добавлен FaSearch
 import axios from 'axios';
 import TelegramEmulator from '../TelegramEmulator'; // Предполагается, что этот компонент существует
 import { SelectedMatchesContext } from '../context/SelectedMatchesContext'; // Импортируем контекст
@@ -285,13 +285,18 @@ const FootballMatchesScreen = () => {
             <FaFutbol size={24} color="#ffffff" />
             <span className="nav-title">Футбол</span>
           </div>
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Поиск"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
+
+          {/* Стилизованное поле поиска */}
+          <div className="searchContainer">
+            <FaSearch className="searchIcon" />
+            <input
+              type="text"
+              className="searchInput"
+              placeholder="Поиск матчей..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="date-panel">

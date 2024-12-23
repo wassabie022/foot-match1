@@ -51,20 +51,36 @@
   margin-left: 10px;
 }
 
-.search-input {
-  background-color: #2a2a2a;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
+/* Стилизованное поле поиска */
+.searchContainer {
+  display: flex;
+  align-items: center;
+  margin: 10px;
   padding: 5px 10px;
-  height: 35px;
-  flex: 1;
-  margin-left: 10px;
-  max-width: 300px; /* Ограничение максимальной ширины поиска */
+  background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  border-radius: 5px;
+  position: relative;
 }
 
-.search-input::placeholder {
-  color: #ffffff;
+.searchInput {
+  flex: 1;
+  padding: 10px 30px 10px 10px; /* Отступы для иконки */
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.searchInput::placeholder {
+  color: #888;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 10px;
+  color: #fff;
+  pointer-events: none; /* Иконка не перехватывает события клика */
 }
 
 /* Панель дат */
@@ -270,29 +286,56 @@
   font-size: 14px;
 }
 
-/* Прочие стили */
-@media (max-width: 600px) {
-  .nav-title {
-    font-size: 18px;
-  }
+/* Загрузка, ошибка и пустой состояния */
+.loading-container,
+.error-container,
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
 
-  .search-input {
-    max-width: 200px;
-  }
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #1E88E5;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
 
-  .team-name {
-    font-size: 14px;
-  }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
-  .league-header-text {
-    font-size: 16px;
-  }
+.loading-text {
+  color: #fff;
+  font-size: 16px;
+}
 
-  .button-text {
-    font-size: 14px;
-  }
+.error-text {
+  color: #E53935;
+  font-size: 16px;
+}
 
-  .selected-text {
-    font-size: 12px;
-  }
+.error-message {
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.retry-button {
+  padding: 10px 20px;
+  background: linear-gradient(180deg, rgba(175, 83, 255, 1), rgba(110, 172, 254, 1));
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.empty-text {
+  color: #888;
+  font-size: 16px;
 }

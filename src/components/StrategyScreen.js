@@ -76,6 +76,22 @@ const StrategyScreen = () => {
     setIsModalVisible(false);
   };
 
+  // Эффект для управления прокруткой
+  useEffect(() => {
+    if (isModalVisible) {
+      // Запрещаем прокрутку
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Разрешаем прокрутку
+      document.body.style.overflow = 'auto';
+    }
+
+    // Чистим стили при размонтировании компонента
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isModalVisible]);
+
   return (
     <div className="container">
       <div className="scroll-content">
