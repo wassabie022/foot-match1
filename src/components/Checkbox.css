@@ -1,0 +1,50 @@
+/* src/components/Checkbox.css */
+
+.checkbox-wrapper {
+    display: flex;
+    align-items: center; /* Выравнивание по вертикали */
+  }
+  
+  .match-checkbox {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    appearance: none;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(217, 217, 217, 0.7));
+    border: 1px solid #A0A0A0;
+    border-radius: 50%;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    outline: none;
+    transition: background 0.3s;
+  }
+  
+  .match-checkbox:checked {
+    background: linear-gradient(180deg, rgba(76, 80, 255, 0.9) 50.75%, rgba(64, 64, 255, 0.8) 100%);
+  }
+  
+  .match-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%; /* Центрирование по вертикали */
+    left: 50%; /* Центрирование по горизонтали */
+    width: 4px; /* Уменьшенный размер галочки */
+    height: 8px; /* Уменьшенный размер галочки */
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -50%) rotate(45deg) scale(0.8); /* Центрирование, поворот и масштабирование */
+    opacity: 0;
+    animation: checkmark 0.3s forwards;
+  }
+  
+  @keyframes checkmark {
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .checkbox-wrapper label {
+    margin-left: 8px;
+    cursor: pointer;
+  }
+  

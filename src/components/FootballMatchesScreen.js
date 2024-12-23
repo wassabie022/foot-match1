@@ -1,17 +1,18 @@
 // src/components/FootballMatchesScreen.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './FootballMatchesScreen.css';
 import { FaFutbol, FaCheckCircle, FaCircle } from 'react-icons/fa';
 import axios from 'axios';
-import TelegramEmulator from '../TelegramEmulator';
+import TelegramEmulator from '../TelegramEmulator'; // Предполагается, что этот компонент существует
+import { SelectedMatchesContext } from '../context/SelectedMatchesContext'; // Импортируем контекст
 
 const GRADIENT_COLORS = ['rgb(175, 83, 255)', 'rgb(110, 172, 254)'];
 const Telegram = window.Telegram || TelegramEmulator.WebApp;
 
-const sheetId = '1R2k3qsM2ggajeBu8IrP1d-LAolneeqcTrDNV_JHqtzc';
-const apiKey = 'AIzaSyDrCLUPUlzlNoj4KJlFAnP2KZrt8MXZbUE';
+const sheetId = process.env.REACT_APP_GOOGLE_SHEETS_ID || '1R2k3qsM2ggajeBu8IrP1d-LAolneeqcTrDNV_JHqtzc';
+const apiKey = process.env.REACT_APP_GOOGLE_SHEETS_API_KEY || 'AIzaSyDrCLUPUlzlNoj4KJlFAnP2KZrt8MXZbUE';
 const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=${apiKey}`;
 
 const getDaysOfWeek = () => {
@@ -45,12 +46,12 @@ const TeamLogo = ({ uri }) => {
 };
 
 const FootballMatchesScreen = () => {
+  const { allMatches, setAllMatches, selectedMatches, setSelectedMatches } = useContext(SelectedMatchesContext); // Используем контекст
   const [searchText, setSearchText] = useState('');
   const [selectedDay, setSelectedDay] = useState(getDaysOfWeek()[0]);
   const [daysOfWeek, setDaysOfWeek] = useState(getDaysOfWeek());
-  const [matchesData, setMatchesData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [selectedCount, setSelectedCount] = useState(0);
+  const [selectedCount, setSelectedCount] = useState(selectedMatches.length);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -96,29 +97,22 @@ const FootballMatchesScreen = () => {
           time,
           homeTeam,
           awayTeam,
+          name: `${homeTeam} vs ${awayTeam}`, // Добавляем свойство name
           league,
           homeLogo,
           awayLogo,
-          isFavorite: false,
         };
       });
 
-      const leaguesMap = {};
-      matches.forEach((match) => {
-        if (!leaguesMap[match.league]) {
-          leaguesMap[match.league] = {
-            league: match.league,
-            leagueIcon: 'futbol',
-            data: [],
-          };
-        }
-        leaguesMap[match.league].data.push(match);
-      });
+      console.log('Фетченные матчи:', matches);
 
-      const structuredData = Object.values(leaguesMap);
+      setAllMatches(matches); // Устанавливаем все матчи в контекст
 
-      setMatchesData(structuredData);
-      setFilteredData(structuredData);
+      // Инициализация выбранных матчей, если необходимо
+      // Например, выбираем первые 3 матча по умолчанию
+      if (selectedMatches.length === 0) {
+        setSelectedMatches(matches.slice(0, 3));
+      }
     } catch (error) {
       console.error('Ошибка при загрузке данных', error);
       setError(error.message);
@@ -142,36 +136,36 @@ const FootballMatchesScreen = () => {
     const applyFilters = () => {
       const lowercasedFilter = searchText.toLowerCase();
 
-      const newData = matchesData
-        .map((league) => {
-          const filteredMatches = league.data.filter((match) => {
-            const homeMatch = match.homeTeam.toLowerCase().includes(lowercasedFilter);
-            const awayMatch = match.awayTeam.toLowerCase().includes(lowercasedFilter);
-            return homeMatch || awayMatch;
-          });
-          return { ...league, data: filteredMatches };
+      const newData = allMatches
+        .filter((match) => {
+          const homeMatch = match.homeTeam.toLowerCase().includes(lowercasedFilter);
+          const awayMatch = match.awayTeam.toLowerCase().includes(lowercasedFilter);
+          return homeMatch || awayMatch;
         })
-        .filter((league) => league.data.length > 0);
+        .filter((match) => match.date === selectedDay.date);
 
-      const dateFilteredData = newData
-        .map((league) => {
-          const dateMatches = league.data.filter(
-            (match) => match.date === selectedDay.date
-          );
-          return { ...league, data: dateMatches };
-        })
-        .filter((league) => league.data.length > 0);
+      // Группировка матчей по лигам
+      const leaguesMap = {};
+      newData.forEach((match) => {
+        if (!leaguesMap[match.league]) {
+          leaguesMap[match.league] = {
+            league: match.league,
+            data: [],
+          };
+        }
+        leaguesMap[match.league].data.push(match);
+      });
 
-      setFilteredData(dateFilteredData);
+      const structuredData = Object.values(leaguesMap);
 
-      const totalSelected = matchesData.reduce((sum, league) => {
-        return sum + league.data.filter((match) => match.isFavorite).length;
-      }, 0);
+      setFilteredData(structuredData);
+
+      const totalSelected = selectedMatches.length;
       setSelectedCount(totalSelected);
     };
 
     applyFilters();
-  }, [searchText, matchesData, selectedDay]);
+  }, [searchText, allMatches, selectedDay, selectedMatches]);
 
   const renderLeagueHeader = (league) => (
     <div className="league-header" key={`league-${league.league}`}>
@@ -180,29 +174,22 @@ const FootballMatchesScreen = () => {
     </div>
   );
 
-  const toggleFavorite = (leagueName, matchId) => {
-    const updatedData = matchesData.map((league) => {
-      if (league.league === leagueName) {
-        return {
-          ...league,
-          data: league.data.map((match) => {
-            if (match.id === matchId) {
-              return { ...match, isFavorite: !match.isFavorite };
-            }
-            return match;
-          }),
-        };
+  const toggleFavorite = (matchId) => {
+    if (selectedMatches.some((match) => match.id === matchId)) {
+      setSelectedMatches(selectedMatches.filter((match) => match.id !== matchId));
+    } else {
+      const matchToAdd = allMatches.find((match) => match.id === matchId);
+      if (matchToAdd) {
+        setSelectedMatches([...selectedMatches, matchToAdd]);
       }
-      return league;
-    });
-    setMatchesData(updatedData);
+    }
   };
 
   const renderMatch = (match, league) => (
     <div
       className="match-container"
       key={`${league.league}-match-${match.id}`}
-      onClick={() => toggleFavorite(league.league, match.id)}
+      onClick={() => toggleFavorite(match.id)}
     >
       <div className="match-row">
         <div className="time-section">
@@ -219,7 +206,7 @@ const FootballMatchesScreen = () => {
           </div>
         </div>
         <div className="favorite-icon-container">
-          {match.isFavorite ? (
+          {selectedMatches.some((m) => m.id === match.id) ? (
             <FaCheckCircle size={24} color="#575FFF" />
           ) : (
             <FaCircle size={24} color="#ffffff" />
@@ -273,7 +260,7 @@ const FootballMatchesScreen = () => {
           <button
             className={`button ${selectedCount <= 0 ? 'button-disabled' : ''}`}
             disabled={selectedCount <= 0}
-            onClick={() => navigate('/strategy', { state: { matchesCount: selectedCount } })}
+            onClick={() => navigate('/strategy')}
           >
             <div
               className="gradient"

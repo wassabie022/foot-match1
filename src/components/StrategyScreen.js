@@ -1,9 +1,11 @@
 // src/components/StrategyScreen.js
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // Импортируем useNavigate и useLocation
-import './StrategyScreen.css'; // Импорт CSS стилей
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './StrategyScreen.css';
 import { FaShieldAlt, FaBalanceScale, FaFire } from 'react-icons/fa';
+import { SelectedMatchesContext } from '../context/SelectedMatchesContext'; // Импортируем контекст
+import EditMatchesModal from './EditMatchesModal'; // Импортируем модальное окно
 
 const RISK_OPTIONS = [
   { 
@@ -29,14 +31,14 @@ const RISK_OPTIONS = [
 const GRADIENT_COLORS = 'linear-gradient(90deg, rgb(175, 83, 255), rgb(110, 172, 254))';
 
 const StrategyScreen = () => {
-  const navigate = useNavigate(); // Инициализируем navigate
-  const location = useLocation(); // Получаем доступ к переданным данным
+  const navigate = useNavigate();
+  
+  // Используем контекст для доступа к выбранным матчам
+  const { selectedMatches, setSelectedMatches } = useContext(SelectedMatchesContext);
+  const matchesCount = selectedMatches.length; // Получаем количество выбранных матчей
 
-  // Получаем количество матчей из переданного состояния или устанавливаем 0 по умолчанию
-  const initialMatchesCount = location.state?.matchesCount || 0;
   const [selectedRisk, setSelectedRisk] = useState('medium');
   const [budget, setBudget] = useState(0); // Изменено с 5000 на 0
-  const [matchesCount, setMatchesCount] = useState(initialMatchesCount); // Устанавливаем начальное значение
 
   useEffect(() => {
     // Если matchesCount равен 0, перенаправляем обратно на первую страницу
@@ -58,9 +60,21 @@ const StrategyScreen = () => {
   const handleCalculate = () => {
     // Логика расчёта прогноза
     console.log(`Риск: ${selectedRisk}, Бюджет: ${budget}`);
+    alert(`Риск: ${selectedRisk}\nБюджет: ${budget} ₽`);
   };
 
   const currentRisk = RISK_OPTIONS.find(r => r.key === selectedRisk);
+
+  // Состояние для модального окна
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
 
   return (
     <div className="container">
@@ -85,7 +99,7 @@ const StrategyScreen = () => {
           <h2 className="section-title">Вы выбрали {matchesCount} матчей</h2>
           <button 
             className="edit-matches-button"
-            onClick={() => navigate('/')} // Навигация обратно на первую страницу
+            onClick={openModal} // Открываем модальное окно
           >
             <div className="edit-gradient">
               <span className="edit-matches-button-text">Изменить матчи</span>
@@ -175,6 +189,12 @@ const StrategyScreen = () => {
         </p>
 
       </div>
+
+      {/* Интеграция модального окна */}
+      <EditMatchesModal
+        isVisible={isModalVisible}
+        onClose={closeModal}
+      />
     </div>
   );
 };

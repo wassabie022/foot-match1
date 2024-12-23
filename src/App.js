@@ -1,9 +1,12 @@
+// src/App.js
+
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen';
 import IntroScreen from './components/IntroScreen';
 import FootballMatchesScreen from './components/FootballMatchesScreen';
 import StrategyScreen from './components/StrategyScreen';
+import { SelectedMatchesProvider } from './context/SelectedMatchesContext'; // Импортируем провайдер контекста
 import './App.css'; // Ваш общий CSS, если есть
 
 function App() {
@@ -12,6 +15,13 @@ function App() {
 
   useEffect(() => {
     console.log('Приложение запущено'); // Проверка
+    // Симулируем загрузку
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      setShowIntro(true);
+    }, 2000); // Загрузка 2 секунды
+
+    return () => clearTimeout(timer);
   }, []);
 
   const handleLoadingComplete = () => {
@@ -36,12 +46,15 @@ function App() {
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<FootballMatchesScreen />} />
-        <Route path="/strategy" element={<StrategyScreen />} />
-      </Routes>
-    </Router>
+    <SelectedMatchesProvider> {/* Оборачиваем приложение в провайдер контекста */}
+      <Router>
+        <Routes>
+          <Route path="/" element={<FootballMatchesScreen />} />
+          <Route path="/strategy" element={<StrategyScreen />} />
+          {/* Добавь другие маршруты по необходимости */}
+        </Routes>
+      </Router>
+    </SelectedMatchesProvider>
   );
 }
 
