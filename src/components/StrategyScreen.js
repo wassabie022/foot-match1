@@ -1,30 +1,35 @@
 // src/components/StrategyScreen.js
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './StrategyScreen.css';
-import { FaShieldAlt, FaBalanceScale, FaFire } from 'react-icons/fa';
-import { SelectedMatchesContext } from '../context/SelectedMatchesContext'; // Импортируем контекст
-import EditMatchesModal from './EditMatchesModal'; // Импортируем модальное окно
+
+// Вместо react-icons используем PNG-иконки
+import shieldIcon from '../assets/shield.png';
+import scaleIcon from '../assets/scale.png';
+import fireIcon from '../assets/fire.png';
+
+import { SelectedMatchesContext } from '../context/SelectedMatchesContext'; 
+import EditMatchesModal from './EditMatchesModal'; 
 
 const RISK_OPTIONS = [
   { 
     key: 'low', 
     title: 'Низкий риск', 
     description: 'Стабильная доходность', 
-    icon: <FaShieldAlt /> // Иконка для низкого риска
+    icon: shieldIcon,
   },
   { 
     key: 'medium', 
     title: 'Средний риск', 
     description: 'Баланс риска и доходности', 
-    icon: <FaBalanceScale /> // Иконка для среднего риска
+    icon: scaleIcon,
   },
   { 
     key: 'high', 
     title: 'Высокий риск', 
     description: 'Максимальная доходность', 
-    icon: <FaFire /> // Иконка для высокого риска
+    icon: fireIcon,
   },
 ];
 
@@ -33,15 +38,18 @@ const GRADIENT_COLORS = 'linear-gradient(90deg, rgb(175, 83, 255), rgb(110, 172,
 const StrategyScreen = () => {
   const navigate = useNavigate();
   
-  // Используем контекст для доступа к выбранным матчам
-  const { selectedMatches, setSelectedMatches } = useContext(SelectedMatchesContext);
-  const matchesCount = selectedMatches.length; // Получаем количество выбранных матчей
+  // Доступ к выбранным матчам из контекста
+  const { selectedMatches } = useContext(SelectedMatchesContext);
+  const matchesCount = selectedMatches.length; 
 
   const [selectedRisk, setSelectedRisk] = useState('medium');
-  const [budget, setBudget] = useState(0); // Изменено с 5000 на 0
+  const [budget, setBudget] = useState(0); 
 
+  const [isFocused, setIsFocused] = useState(false); 
+  const inputRef = useRef(null); 
+
+  // Если 0 матчей, возвращаем на первую страницу
   useEffect(() => {
-    // Если matchesCount равен 0, перенаправляем обратно на первую страницу
     if (matchesCount === 0) {
       navigate('/');
     }
@@ -53,12 +61,15 @@ const StrategyScreen = () => {
 
   const handleBudgetChange = (event) => {
     const value = event.target.value;
-    const val = Math.round(value);
-    setBudget(val);
+    // Разрешаем только цифры
+    if (/^\d*$/.test(value)) {
+      const val = Math.round(value);
+      setBudget(val);
+    }
   };
 
   const handleCalculate = () => {
-    // Логика расчёта прогноза
+    // Пример логики расчёта
     console.log(`Риск: ${selectedRisk}, Бюджет: ${budget}`);
     alert(`Риск: ${selectedRisk}\nБюджет: ${budget} ₽`);
   };
@@ -71,36 +82,38 @@ const StrategyScreen = () => {
   const openModal = () => {
     setIsModalVisible(true);
   };
-
   const closeModal = () => {
     setIsModalVisible(false);
   };
 
-  // Эффект для управления прокруткой
+  // Управляем прокруткой при открытии модалки
   useEffect(() => {
     if (isModalVisible) {
-      // Запрещаем прокрутку
       document.body.style.overflow = 'hidden';
     } else {
-      // Разрешаем прокрутку
       document.body.style.overflow = 'auto';
     }
-
-    // Чистим стили при размонтировании компонента
     return () => {
       document.body.style.overflow = 'auto';
     };
   }, [isModalVisible]);
 
+  // Прокрутка поля ввода при фокусе (на мобильных устройствах)
+  useEffect(() => {
+    if (isFocused && inputRef.current) {
+      inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [isFocused]);
+
   return (
-    <div className="container">
+    <div className={`container ${isFocused ? 'focused' : ''}`}>
       <div className="scroll-content">
         
         {/* Заголовок с кнопкой "Назад" */}
         <div className="header">
           <button
             className="back-button"
-            onClick={() => navigate('/')} // Навигация обратно на первую страницу
+            onClick={() => navigate('/')} 
           >
             Назад
           </button>
@@ -115,7 +128,7 @@ const StrategyScreen = () => {
           <h2 className="section-title">Вы выбрали {matchesCount} матчей</h2>
           <button 
             className="edit-matches-button"
-            onClick={openModal} // Открываем модальное окно
+            onClick={openModal}
           >
             <div className="edit-gradient">
               <span className="edit-matches-button-text">Изменить матчи</span>
@@ -137,7 +150,11 @@ const StrategyScreen = () => {
                 onClick={() => handleRiskSelect(r.key)}
               >
                 <div className="risk-icon">
-                  {React.cloneElement(r.icon, { size: 30, color: selectedRisk === r.key ? '#FFFFFF' : '#BBBBBB' })}
+                  <img 
+                    src={r.icon} 
+                    alt={r.key}
+                    className="risk-icon-img" 
+                  />
                 </div>
                 <h3 className="risk-title">{r.title}</h3>
                 <p className="risk-description">{r.description}</p>
@@ -159,6 +176,12 @@ const StrategyScreen = () => {
               value={budget === 0 ? '' : budget}
               onChange={handleBudgetChange}
               placeholder="0"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              ref={inputRef}
+              aria-label="Введите ваш бюджет"
             />
             <span className="currency-text">₽</span>
           </div>
@@ -187,7 +210,7 @@ const StrategyScreen = () => {
           <p className="hint-text">Сумма будет распределена по выбранным матчам.</p>
         </div>
 
-        {/* Кнопка действия (Рассчитать прогноз) */}
+        {/* Кнопка "Рассчитать прогноз" */}
         <button 
           className={`calculate-button ${budget === 0 ? 'calculate-button-disabled' : ''}`} 
           onClick={handleCalculate}
@@ -206,7 +229,7 @@ const StrategyScreen = () => {
 
       </div>
 
-      {/* Интеграция модального окна */}
+      {/* Модальное окно редактирования матчей */}
       <EditMatchesModal
         isVisible={isModalVisible}
         onClose={closeModal}

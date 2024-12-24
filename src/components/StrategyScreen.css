@@ -5,10 +5,15 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #121212; /* Тёмный фон для премиального вида */
+  background-color: #121212;
   color: #FFFFFF;
   padding: 16px;
   box-sizing: border-box;
+  transition: padding-bottom 0.3s ease;
+}
+
+.container.focused {
+  padding-bottom: 300px;
 }
 
 .scroll-content {
@@ -20,9 +25,9 @@
 /* Заголовок */
 .header {
   display: flex;
-  flex-direction: column; /* Вертикальное расположение */
-  align-items: flex-start; /* Выравнивание по левому краю */
-  margin-bottom: 8px; /* Отступ снизу */
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 8px;
 }
 
 .back-button {
@@ -31,7 +36,7 @@
   color: #ffffff;
   font-size: 16px;
   cursor: pointer;
-  margin-bottom: 4px; /* Отступ снизу между кнопкой и заголовком */
+  margin-bottom: 4px;
   padding: 0;
 }
 
@@ -42,7 +47,7 @@
 .header-title {
   font-size: 24px;
   font-weight: 700;
-  color: #FFFFFF; /* Белый цвет */
+  color: #FFFFFF;
   margin: 0;
 }
 
@@ -50,10 +55,10 @@
 .sub-header-text {
   font-size: 14px;
   color: #DDDDDD;
-  margin-bottom: 24px; /* Отступ снизу для разделения с остальным контентом */
-  line-height: 1.5; /* Улучшенная читаемость */
-  text-align: left; /* Выравнивание по левому краю */
-  margin-left: 0; /* Убираем возможные отступы слева */
+  margin-bottom: 24px;
+  line-height: 1.5;
+  text-align: left;
+  margin-left: 0;
 }
 
 /* Секции */
@@ -76,7 +81,7 @@
   padding: 0;
   cursor: pointer;
   border-radius: 8px;
-  overflow: hidden; /* Для корректного отображения градиента с закруглёнными углами */
+  overflow: hidden;
   margin-bottom: 8px;
 }
 
@@ -107,13 +112,27 @@
   justify-content: space-between;
 }
 
+/* 
+  Карточка риска:
+  добавляем display: flex, 
+  flex-direction: column,
+  align-items: center, 
+  justify-content: center
+  чтобы всё (иконка, заголовок, описание) 
+  было по центру по вертикали и горизонтали.
+*/
 .risk-card {
   flex: 1;
   margin: 0 4px;
   background-color: #1E1E1E;
   border-radius: 12px;
   padding: 16px;
-  align-items: center;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;       /* Горизонтальное центрирование */
+  justify-content: center;   /* Вертикальное центрирование */
+  
   border: 1px solid #333333;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s, background-color 0.2s;
@@ -130,15 +149,27 @@
   box-shadow: 0px 4px 10px rgba(154, 127, 255, 0.3);
 }
 
+/* Отступ между иконкой и текстом */
 .risk-icon {
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* PNG-иконки в карточках (60x60) */
+.risk-icon-img {
+  width: 60px;
+  height: 60px;
+}
+
+/* Заголовок риска, выравниваем по центру */
 .risk-title {
   font-size: 14px;
   font-weight: 600;
   color: #FFFFFF;
   margin: 0;
+  text-align: center; /* <-- Центрируем текст */
 }
 
 .risk-description {
@@ -165,16 +196,23 @@
   flex: 1;
   height: 40px;
   border: 1px solid #444;
-  border-radius: 8px;
-  padding: 0 8px;
+  border-radius: 20px;
+  padding: 0 15px;
   margin-right: 8px;
   font-size: 16px;
   background-color: #1E1E1E;
   color: #FFFFFF;
+  outline: none;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.budget-input:focus {
+  box-shadow: 0px 4px 12px rgba(154, 127, 255, 0.5);
 }
 
 .budget-input::placeholder {
-  color: #888;
+  color: #ccc;
 }
 
 .currency-text {
@@ -218,7 +256,7 @@
   border-radius: 50%;
   cursor: pointer;
   border: none;
-  margin-top: -6px; /* Центрирование ползунка */
+  margin-top: -6px;
 }
 
 .slider::-moz-range-thumb {
@@ -260,13 +298,13 @@
   border: none;
   background: none;
   border-radius: 8px;
-  overflow: hidden; /* Для корректного отображения градиента с закруглёнными углами */
+  overflow: hidden;
   margin-bottom: 16px;
   cursor: pointer;
 }
 
 .calculate-button:disabled {
-  opacity: 0.5; /* Уменьшаем прозрачность при отключении */
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -280,7 +318,7 @@
 }
 
 .calculate-button-text {
-  color: #FFF; /* Белый текст для контраста с градиентом */
+  color: #FFF;
   font-size: 16px;
   font-weight: 600;
 }
@@ -290,4 +328,20 @@
   font-size: 12px;
   color: #DDDDDD;
   text-align: center;
+}
+
+/* Изменение отступов при фокусе на поле ввода */
+.container.focused .strategy-container {
+  padding-bottom: 300px;
+}
+
+/* Адаптивные отступы для мобильных устройств */
+@media (max-width: 600px) {
+  .budget-input {
+    width: 100%;
+  }
+
+  .container.focused {
+    padding-bottom: 250px;
+  }
 }

@@ -1,3 +1,9 @@
+/* ЗАГРУЗКА ШРИФТОВ ИЗ GOOGLE FONTS 
+   Добавляем Manrope wght@300 и wght@700, 
+   а также прочие шрифты, которые были раньше.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;700&family=JetBrains+Mono:wght@200&family=Manrope:wght@300;700&display=swap');
+
 /* src/components/FootballMatchesScreen.css */
 
 /* Глобальное применение box-sizing */
@@ -44,10 +50,12 @@
   align-items: center;
 }
 
+/* Заголовок "Футбол" — Manrope, Bold(700) */
 .nav-title {
   color: #ffffff;
   font-size: 20px;
-  font-weight: bold;
+  font-weight: 700;
+  font-family: 'Manrope', sans-serif;
   margin-left: 10px;
 }
 
@@ -69,18 +77,25 @@
   border-radius: 5px;
   background: transparent;
   color: #fff;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'DM Sans', sans-serif; /* Можно оставить как есть или поменять */
 }
 
 .searchInput::placeholder {
   color: #888;
 }
 
+/* Иконка лупы на чёрном цвете */
 .searchIcon {
   position: absolute;
   right: 10px;
-  color: #fff;
-  pointer-events: none; /* Иконка не перехватывает события клика */
+  color: #000 !important;
+  pointer-events: none;
+}
+.searchIcon svg {
+  fill: #000 !important;
+}
+.searchIcon svg path {
+  fill: #000 !important;
 }
 
 /* Панель дат */
@@ -112,9 +127,14 @@
   border-radius: 5px;
 }
 
+/* 
+   У дат в календаре — Manrope Light (300) 
+*/
 .day-button-text {
   color: #ffffff;
   font-size: 16px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 300; /* Light 300 */
 }
 
 .active-day-button-text {
@@ -126,6 +146,8 @@
   color: #cccccc;
   font-size: 14px;
   margin-top: 2px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 300; /* Light 300 */
 }
 
 .active-date-text {
@@ -141,7 +163,7 @@
   max-width: 100%;
 }
 
-/* Заголовок лиги */
+/* Заголовок лиги -> Inter, 700 (Bold) */
 .league-header {
   display: flex;
   align-items: center;
@@ -155,13 +177,13 @@
   color: #ffffff;
   font-size: 18px;
   margin-left: 10px;
-  font-weight: bold;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
 }
 
 /* Контейнер для матча */
 .match-container {
   margin: 10px 0;
-  cursor: pointer;
 }
 
 .match-row {
@@ -177,9 +199,12 @@
   justify-content: flex-start;
 }
 
+/* Время -> JetBrains Mono, ExtraLight(200) */
 .match-time {
   color: #cccccc;
   font-size: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 200;
 }
 
 .teams-container {
@@ -201,7 +226,7 @@
   border-radius: 15px;
   margin-right: 10px;
   overflow: hidden;
-  background-color: #444;
+  background-color: transparent; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -218,26 +243,92 @@
   height: 30px;
   border-radius: 15px;
   margin-right: 10px;
-  background-color: #444;
+  background-color: transparent; 
 }
 
+/* Название команды -> Inter, 500 */
 .team-name {
   color: #ffffff;
   font-size: 16px;
   flex-shrink: 1;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
 }
 
-.favorite-icon-container {
-  padding: 5px;
+/* Контейнер для чекбоксов */
+.favorite-checkbox-container {
+  display: flex;
+  align-items: center;
 }
 
+/* Кастомные чекбоксы */
+.match-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  margin-right: 10px;
+  cursor: pointer;
+  position: relative;
+  background-color: transparent;
+  transition: background 0.3s;
+}
+
+.match-checkbox:checked {
+  background: linear-gradient(180deg, rgba(76, 80, 255, 0.9) 50.75%, rgba(64, 64, 255, 0.8) 100%);
+}
+
+.match-checkbox + label {
+  display: flex;
+  align-items: center;
+}
+
+.match-checkbox-label {
+  cursor: pointer;
+}
+
+/* Заголовок выбранных матчей */
+.selectedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #1F1F1F;
+  border-radius: 5px;
+}
+
+.selectedCount {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.clearAllButton {
+  background: none;
+  border: none;
+  color: #E53935;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Список матчей */
+.matchList {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  overflow-y: auto;
+  max-height: 50vh;
+}
+
+/* Кнопки и прочие элементы */
 .separator {
   height: 1px;
   background-color: #2a2a2a;
   margin: 5px 0;
 }
 
-/* Нижняя панель */
 .bottom-panel {
   width: 100%;
   position: fixed;
@@ -252,6 +343,7 @@
   align-items: center;
 }
 
+/* Градиент прямо на кнопке */
 .button {
   width: 100%;
   border-radius: 8px;
@@ -260,25 +352,28 @@
   opacity: 1;
   border: none;
   cursor: pointer;
+  padding: 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, rgb(175, 83, 255), rgb(110, 172, 254));
 }
 
+/* Если кнопка disabled, то частично прозрачная */
 .button-disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.gradient {
-  padding: 14px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-}
-
+/* 
+   Текст внутри кнопки "Далее" -> Manrope, 
+   Bold (700) 
+*/
 .button-text {
   color: #ffffff;
   font-size: 16px;
-  font-weight: 600;
+  font-family: 'Manrope', sans-serif; 
+  font-weight: 700; /* Bold */
 }
 
 .selected-text {
@@ -299,7 +394,7 @@
 
 .spinner {
   border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #1E88E5;
+  border-top: 4px solid rgb(175, 83, 255);
   border-radius: 50%;
   width: 40px;
   height: 40px;

@@ -10,18 +10,21 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px; /* Добавлены равномерные отступы со всех сторон */
+  box-sizing: border-box; /* Учитываем padding при расчете размеров */
   z-index: 1000;
 }
 
 .modalContainer {
   background-color: #1F1F1F;
-  width: 600px; /* Фиксированная ширина */
+  width: 100%; /* Занимает всю доступную ширину с учетом padding */
+  max-width: 600px; /* Ограничение максимальной ширины */
   height: 80vh; /* Фиксированная высота */
   border-radius: 10px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  max-height: 90vh;
+  max-height: 90vh; /* Ограничение максимальной высоты */
 }
 
 .modalHeader {

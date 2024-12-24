@@ -3,10 +3,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './FootballMatchesScreen.css';
-import { FaFutbol, FaCheckCircle, FaCircle, FaSearch } from 'react-icons/fa'; // Добавлен FaSearch
+import { FaFutbol, FaSearch } from 'react-icons/fa'; 
 import axios from 'axios';
-import TelegramEmulator from '../TelegramEmulator'; // Предполагается, что этот компонент существует
-import { SelectedMatchesContext } from '../context/SelectedMatchesContext'; // Импортируем контекст
+import TelegramEmulator from '../TelegramEmulator';
+import { SelectedMatchesContext } from '../context/SelectedMatchesContext';
 
 const GRADIENT_COLORS = ['rgb(175, 83, 255)', 'rgb(110, 172, 254)'];
 const Telegram = window.Telegram || TelegramEmulator.WebApp;
@@ -46,7 +46,7 @@ const TeamLogo = ({ uri }) => {
 };
 
 const FootballMatchesScreen = () => {
-  const { allMatches, setAllMatches, selectedMatches, setSelectedMatches } = useContext(SelectedMatchesContext); // Используем контекст
+  const { allMatches, setAllMatches, selectedMatches, setSelectedMatches } = useContext(SelectedMatchesContext);
   const [searchText, setSearchText] = useState('');
   const [selectedDay, setSelectedDay] = useState(getDaysOfWeek()[0]);
   const [daysOfWeek, setDaysOfWeek] = useState(getDaysOfWeek());
@@ -97,7 +97,7 @@ const FootballMatchesScreen = () => {
           time,
           homeTeam,
           awayTeam,
-          name: `${homeTeam} vs ${awayTeam}`, // Добавляем свойство name
+          name: `${homeTeam} vs ${awayTeam}`, 
           league,
           homeLogo,
           awayLogo,
@@ -106,10 +106,9 @@ const FootballMatchesScreen = () => {
 
       console.log('Фетченные матчи:', matches);
 
-      setAllMatches(matches); // Устанавливаем все матчи в контекст
+      setAllMatches(matches);
 
       // Инициализация выбранных матчей, если необходимо
-      // Например, выбираем первые 3 матча по умолчанию
       if (selectedMatches.length === 0) {
         setSelectedMatches(matches.slice(0, 3));
       }
@@ -189,7 +188,6 @@ const FootballMatchesScreen = () => {
     <div
       className="match-container"
       key={`${league.league}-match-${match.id}`}
-      onClick={() => toggleFavorite(match.id)}
     >
       <div className="match-row">
         <div className="time-section">
@@ -205,12 +203,15 @@ const FootballMatchesScreen = () => {
             <span className="team-name">{match.awayTeam}</span>
           </div>
         </div>
-        <div className="favorite-icon-container">
-          {selectedMatches.some((m) => m.id === match.id) ? (
-            <FaCheckCircle size={24} color="#575FFF" />
-          ) : (
-            <FaCircle size={24} color="#ffffff" />
-          )}
+        <div className="favorite-checkbox-container">
+          <input
+            type="checkbox"
+            id={`match-checkbox-${match.id}`}
+            className="match-checkbox"
+            checked={selectedMatches.some((m) => m.id === match.id)}
+            onChange={() => toggleFavorite(match.id)}
+          />
+          <label htmlFor={`match-checkbox-${match.id}`} className="match-checkbox-label"></label>
         </div>
       </div>
     </div>
@@ -262,14 +263,7 @@ const FootballMatchesScreen = () => {
             disabled={selectedCount <= 0}
             onClick={() => navigate('/strategy')}
           >
-            <div
-              className="gradient"
-              style={{
-                background: `linear-gradient(90deg, ${GRADIENT_COLORS.join(', ')})`,
-              }}
-            >
-              <span className="button-text">Далее</span>
-            </div>
+            <span className="button-text">Далее</span>
           </button>
           <span className="selected-text">Выбрано матчей: {selectedCount}</span>
         </div>
