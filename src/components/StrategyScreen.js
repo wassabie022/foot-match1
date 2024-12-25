@@ -71,7 +71,8 @@ const StrategyScreen = () => {
   const handleCalculate = () => {
     // Пример логики расчёта
     console.log(`Риск: ${selectedRisk}, Бюджет: ${budget}`);
-    alert(`Риск: ${selectedRisk}\nБюджет: ${budget} ₽`);
+    // Перенаправляем на страницу подтверждения
+    navigate('/request-accepted');
   };
 
   const currentRisk = RISK_OPTIONS.find(r => r.key === selectedRisk);

@@ -1,0 +1,56 @@
+/* src/components/RequestAccepted.css */
+
+/* Основной контейнер для третьей страницы */
+.container {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100%;
+    margin: 0;
+    padding: 20px;
+    background: #1D1F24;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  
+  /* Стиль для иконки */
+  .icon img {
+    width: 80px !important;
+    height: auto !important;
+    margin-bottom: 20px;
+  }
+  
+  /* Стиль для заголовка */
+  .headline {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #FFFFFF;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  /* Текстовый блок */
+  .subtext {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color: #FFFFFF;
+    text-align: center;
+    margin-bottom: 15px;
+    max-width: 80%;
+  }
+  
+  /* Дисклеймер */
+  .disclaimer {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #A0A0A0;
+    text-align: center;
+    margin-top: auto;
+    max-width: 80%;
+  }
+  

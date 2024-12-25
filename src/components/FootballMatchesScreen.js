@@ -1,18 +1,21 @@
-// src/components/FootballMatchesScreen.js
-
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './FootballMatchesScreen.css';
-import { FaFutbol, FaSearch } from 'react-icons/fa'; 
+import { FaFutbol, FaSearch } from 'react-icons/fa';
 import axios from 'axios';
-import TelegramEmulator from '../TelegramEmulator';
-import { SelectedMatchesContext } from '../context/SelectedMatchesContext';
+import TelegramEmulator from '../TelegramEmulator'; // Предполагается, что этот компонент существует
+import { SelectedMatchesContext } from '../context/SelectedMatchesContext'; // Импортируем контекст
 
 const GRADIENT_COLORS = ['rgb(175, 83, 255)', 'rgb(110, 172, 254)'];
 const Telegram = window.Telegram || TelegramEmulator.WebApp;
 
-const sheetId = process.env.REACT_APP_GOOGLE_SHEETS_ID || '1R2k3qsM2ggajeBu8IrP1d-LAolneeqcTrDNV_JHqtzc';
-const apiKey = process.env.REACT_APP_GOOGLE_SHEETS_API_KEY || 'AIzaSyDrCLUPUlzlNoj4KJlFAnP2KZrt8MXZbUE';
+const sheetId =
+  process.env.REACT_APP_GOOGLE_SHEETS_ID ||
+  '1R2k3qsM2ggajeBu8IrP1d-LAolneeqcTrDNV_JHqtzc';
+const apiKey =
+  process.env.REACT_APP_GOOGLE_SHEETS_API_KEY ||
+  'AIzaSyDrCLUPUlzlNoj4KJlFAnP2KZrt8MXZbUE';
+
 const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=${apiKey}`;
 
 const getDaysOfWeek = () => {
@@ -27,7 +30,9 @@ const getDaysOfWeek = () => {
     const label = i === 0 ? 'СЕГОДНЯ' : dayNames[dayIndex];
     const dayNum = date.getDate();
     const month = date.getMonth() + 1;
-    const dateStr = `${dayNum < 10 ? '0' : ''}${dayNum}.${month < 10 ? '0' : ''}${month}`;
+    const dateStr = `${dayNum < 10 ? '0' : ''}${dayNum}.${
+      month < 10 ? '0' : ''
+    }${month}`;
     days.push({ label, date: dateStr });
   }
 
@@ -46,7 +51,9 @@ const TeamLogo = ({ uri }) => {
 };
 
 const FootballMatchesScreen = () => {
-  const { allMatches, setAllMatches, selectedMatches, setSelectedMatches } = useContext(SelectedMatchesContext);
+  const { allMatches, setAllMatches, selectedMatches, setSelectedMatches } =
+    useContext(SelectedMatchesContext);
+
   const [searchText, setSearchText] = useState('');
   const [selectedDay, setSelectedDay] = useState(getDaysOfWeek()[0]);
   const [daysOfWeek, setDaysOfWeek] = useState(getDaysOfWeek());
@@ -97,7 +104,7 @@ const FootballMatchesScreen = () => {
           time,
           homeTeam,
           awayTeam,
-          name: `${homeTeam} vs ${awayTeam}`, 
+          name: `${homeTeam} vs ${awayTeam}`, // для удобного поиска
           league,
           homeLogo,
           awayLogo,
@@ -105,10 +112,9 @@ const FootballMatchesScreen = () => {
       });
 
       console.log('Фетченные матчи:', matches);
-
       setAllMatches(matches);
 
-      // Инициализация выбранных матчей, если необходимо
+      // Пример начальной инициализации выбранных матчей
       if (selectedMatches.length === 0) {
         setSelectedMatches(matches.slice(0, 3));
       }
@@ -129,6 +135,7 @@ const FootballMatchesScreen = () => {
         console.log('Main button clicked');
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -158,9 +165,7 @@ const FootballMatchesScreen = () => {
       const structuredData = Object.values(leaguesMap);
 
       setFilteredData(structuredData);
-
-      const totalSelected = selectedMatches.length;
-      setSelectedCount(totalSelected);
+      setSelectedCount(selectedMatches.length);
     };
 
     applyFilters();
@@ -185,10 +190,7 @@ const FootballMatchesScreen = () => {
   };
 
   const renderMatch = (match, league) => (
-    <div
-      className="match-container"
-      key={`${league.league}-match-${match.id}`}
-    >
+    <div className="match-container" key={`${league.league}-match-${match.id}`}>
       <div className="match-row">
         <div className="time-section">
           <span className="match-time">{match.time}</span>
@@ -211,7 +213,10 @@ const FootballMatchesScreen = () => {
             checked={selectedMatches.some((m) => m.id === match.id)}
             onChange={() => toggleFavorite(match.id)}
           />
-          <label htmlFor={`match-checkbox-${match.id}`} className="match-checkbox-label"></label>
+          <label
+            htmlFor={`match-checkbox-${match.id}`}
+            className="match-checkbox-label"
+          ></label>
         </div>
       </div>
     </div>
@@ -280,7 +285,6 @@ const FootballMatchesScreen = () => {
             <span className="nav-title">Футбол</span>
           </div>
 
-          {/* Стилизованное поле поиска */}
           <div className="searchContainer">
             <FaSearch className="searchIcon" />
             <input
@@ -312,9 +316,7 @@ const FootballMatchesScreen = () => {
                     {day.label}
                   </span>
                   <span
-                    className={`date-text ${
-                      isActive ? 'active-date-text' : ''
-                    }`}
+                    className={`date-text ${isActive ? 'active-date-text' : ''}`}
                   >
                     {day.date}
                   </span>

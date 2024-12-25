@@ -6,6 +6,7 @@ import LoadingScreen from './components/LoadingScreen';
 import IntroScreen from './components/IntroScreen';
 import FootballMatchesScreen from './components/FootballMatchesScreen';
 import StrategyScreen from './components/StrategyScreen';
+import RequestAccepted from './components/RequestAccepted'; // Импортируем новый компонент
 import { SelectedMatchesProvider } from './context/SelectedMatchesContext'; // Импортируем провайдер контекста
 import './App.css'; // Ваш общий CSS, если есть
 
@@ -51,7 +52,8 @@ function App() {
         <Routes>
           <Route path="/" element={<FootballMatchesScreen />} />
           <Route path="/strategy" element={<StrategyScreen />} />
-          {/* Добавь другие маршруты по необходимости */}
+          <Route path="/request-accepted" element={<RequestAccepted />} /> {/* Новый маршрут */}
+          {/* Добавьте другие маршруты при необходимости */}
         </Routes>
       </Router>
     </SelectedMatchesProvider>
