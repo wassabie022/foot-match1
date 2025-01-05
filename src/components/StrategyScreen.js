@@ -69,7 +69,7 @@ const StrategyScreen = () => {
   };
 
   const handleSendDataToGoogleSheet = async () => {
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbzdNcm1oxEiFGs6AoRXVQgvV_tp8c3ldz8ZzuZVV2s_W-qywNgBQhcZ7caHG9iXRPtm/exec";
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbzsAMbWf9ZFzFmbPEQtorZkDVOHV3IWsOhwH8ELK-77y489m9wIWca6W-e8_loX9MaR/exec";
 
     const data = {
       chatId: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || "unknown", // Получаем chatId из Telegram
