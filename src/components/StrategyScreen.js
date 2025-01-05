@@ -33,8 +33,6 @@ const RISK_OPTIONS = [
   },
 ];
 
-const GRADIENT_COLORS = 'linear-gradient(90deg, rgb(175, 83, 255), rgb(110, 172, 254))';
-
 const StrategyScreen = () => {
   const navigate = useNavigate();
   
@@ -71,18 +69,17 @@ const StrategyScreen = () => {
   const handleSendDataToGoogleSheet = async () => {
     const scriptUrl = "https://script.google.com/macros/s/AKfycbx0Foxc5yj5leY5_8Tl9ufjjyB11kSgdBMzGgfHmkzA9x_uKPUpOp5wWtLR11EHztA-/exec";
 
-    const data = {
-      chatId: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || "unknown", // Получаем chatId из Telegram
-      riskLevel: selectedRisk, // Уровень риска
-      budget: budget, // Бюджет пользователя
-      matches: selectedMatches.map((match) => match.name).join(", ") || "Нет матчей", // Список выбранных матчей
-    };
+    const formData = new URLSearchParams();
+    formData.append('chatId', window.Telegram?.WebApp?.initDataUnsafe?.user?.id || "unknown");
+    formData.append('riskLevel', selectedRisk);
+    formData.append('budget', budget);
+    formData.append('matches', selectedMatches.map((match) => match.name).join(", ") || "Нет матчей");
 
     try {
       const response = await fetch(scriptUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString(),
       });
 
       const result = await response.json();
@@ -132,6 +129,7 @@ const StrategyScreen = () => {
       document.body.style.overflow = 'auto';
     };
   }, [isModalVisible]);
+
 
   // Прокрутка поля ввода при фокусе (на мобильных устройствах)
   useEffect(() => {
@@ -245,6 +243,7 @@ const StrategyScreen = () => {
           </div>
           <p className="hint-text">Сумма будет распределена по выбранным матчам.</p>
         </div>
+
 
         {/* Кнопка "Рассчитать прогноз" */}
         <button 
