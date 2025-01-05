@@ -13,9 +13,21 @@ import './App.css'; // Ваш общий CSS, если есть
 function App() {
   const [isLoading, setIsLoading] = useState(true); // Экран загрузки
   const [showIntro, setShowIntro] = useState(false); // Экран интро
+  const [chatId, setChatId] = useState(null); // Сохраняем chat ID
 
   useEffect(() => {
     console.log('Приложение запущено'); // Проверка
+
+    // Инициализация Telegram Web Apps API
+    const telegram = window.Telegram?.WebApp;
+    if (telegram) {
+      const userChatId = telegram.initDataUnsafe?.user?.id || null;
+      setChatId(userChatId);
+      console.log('Получен Chat ID:', userChatId);
+    } else {
+      console.warn('Telegram Web Apps API недоступен');
+    }
+
     // Симулируем загрузку
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -50,9 +62,9 @@ function App() {
     <SelectedMatchesProvider> {/* Оборачиваем приложение в провайдер контекста */}
       <Router>
         <Routes>
-          <Route path="/" element={<FootballMatchesScreen />} />
-          <Route path="/strategy" element={<StrategyScreen />} />
-          <Route path="/request-accepted" element={<RequestAccepted />} /> {/* Новый маршрут */}
+          <Route path="/" element={<FootballMatchesScreen chatId={chatId} />} />
+          <Route path="/strategy" element={<StrategyScreen chatId={chatId} />} />
+          <Route path="/request-accepted" element={<RequestAccepted chatId={chatId} />} /> {/* Новый маршрут */}
           {/* Добавьте другие маршруты при необходимости */}
         </Routes>
       </Router>

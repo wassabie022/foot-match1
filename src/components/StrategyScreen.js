@@ -68,9 +68,43 @@ const StrategyScreen = () => {
     }
   };
 
+  const handleSendDataToGoogleSheet = async () => {
+    const scriptUrl = "https://script.google.com/macros/s/AKfycbzdNcm1oxEiFGs6AoRXVQgvV_tp8c3ldz8ZzuZVV2s_W-qywNgBQhcZ7caHG9iXRPtm/exec";
+
+    const data = {
+      chatId: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || "unknown", // Получаем chatId из Telegram
+      riskLevel: selectedRisk, // Уровень риска
+      budget: budget, // Бюджет пользователя
+      matches: selectedMatches.map((match) => match.name).join(", ") || "Нет матчей", // Список выбранных матчей
+    };
+
+    try {
+      const response = await fetch(scriptUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        console.log("Данные успешно отправлены в Google Таблицу:", result);
+        alert("Данные успешно отправлены!");
+      } else {
+        console.error("Ошибка при отправке данных:", result);
+        alert("Ошибка при отправке данных.");
+      }
+    } catch (error) {
+      console.error("Ошибка сети или скрипта:", error);
+      alert("Не удалось отправить данные. Проверьте соединение.");
+    }
+  };
+
   const handleCalculate = () => {
-    // Пример логики расчёта
     console.log(`Риск: ${selectedRisk}, Бюджет: ${budget}`);
+    
+    // Отправляем данные в Google Таблицу
+    handleSendDataToGoogleSheet();
+    
     // Перенаправляем на страницу подтверждения
     navigate('/request-accepted');
   };
@@ -139,6 +173,7 @@ const StrategyScreen = () => {
             Чем больше матчей, тем шире возможности прогноза, но тем выше риск.
           </p>
         </div>
+
 
         {/* Выбор уровня риска */}
         <div className="section">
