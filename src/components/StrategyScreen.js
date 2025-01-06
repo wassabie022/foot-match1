@@ -27,7 +27,7 @@ const RISK_OPTIONS = [
   },
   { 
     key: 'high', 
-    title: 'Высокий риск', 
+    title: 'Высоккий риск', 
     description: 'Максимальная доходность', 
     icon: fireIcon,
   },
