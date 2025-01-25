@@ -1,5 +1,15 @@
+:root {
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --tg-height: 100vh;
+  --tg-stable-height: 100vh;
+}
+
 body {
   margin: 0;
+  padding: 0;
+  height: var(--tg-height);
+  background-color: #121212;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -7,7 +17,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  height: -webkit-fill-available;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }

@@ -1,8 +1,8 @@
 // src/components/StrategyScreen.js
 
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './StrategyScreen.css';
+import { useNavigate } from 'react-router-dom';
 
 // Вместо react-icons используем PNG-иконки
 import shieldIcon from '../assets/shield.png';
@@ -12,30 +12,45 @@ import fireIcon from '../assets/fire.png';
 import { SelectedMatchesContext } from '../context/SelectedMatchesContext'; 
 import EditMatchesModal from './EditMatchesModal'; 
 
+// Импортируем функцию отправки в Telegram
+import { sendMatchesToTelegram } from '../services/telegramService';
+
 const RISK_OPTIONS = [
   { 
     key: 'low', 
     title: 'Низкий риск', 
-    description: 'Стабильная доходность', 
+    description: 'Консервативный подход', 
     icon: shieldIcon,
   },
   { 
     key: 'medium', 
     title: 'Средний риск', 
-    description: 'Баланс риска и доходности', 
+    description: 'Сбалансированный подход', 
     icon: scaleIcon,
   },
   { 
     key: 'high', 
     title: 'Высокий риск', 
-    description: 'Максимальная доходность', 
+    description: 'Агрессивный подход', 
     icon: fireIcon,
   },
 ];
 
 const StrategyScreen = () => {
   const navigate = useNavigate();
-  
+
+  // Проверяем, запущено ли приложение в Telegram
+  const tg = window.Telegram?.WebApp;
+  if (!tg) {
+    alert("Приложение должно быть открыто в Telegram WebApp");
+    // Можно также отключить кнопку отправки
+    const sendDataBtn = document.querySelector('.calculate-button');
+    if (sendDataBtn) {
+      sendDataBtn.disabled = true;
+    }
+    // return; // Раскомментируйте, если хотите полностью остановить работу компонента
+  }
+
   // Доступ к выбранным матчам из контекста
   const { selectedMatches } = useContext(SelectedMatchesContext);
   const matchesCount = selectedMatches.length; 
@@ -49,9 +64,9 @@ const StrategyScreen = () => {
   // Если 0 матчей, возвращаем на первую страницу
   useEffect(() => {
     if (matchesCount === 0) {
-      navigate('/');
+      // navigate('/');
     }
-  }, [matchesCount, navigate]);
+  }, [matchesCount]);
 
   const handleRiskSelect = (riskKey) => {
     setSelectedRisk(riskKey);
@@ -66,44 +81,40 @@ const StrategyScreen = () => {
     }
   };
 
-  const handleSendDataToGoogleSheet = async () => {
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbx0Foxc5yj5leY5_8Tl9ufjjyB11kSgdBMzGgfHmkzA9x_uKPUpOp5wWtLR11EHztA-/exec";
-
-    const formData = new URLSearchParams();
-    formData.append('chatId', window.Telegram?.WebApp?.initDataUnsafe?.user?.id || "unknown");
-    formData.append('riskLevel', selectedRisk);
-    formData.append('budget', budget);
-    formData.append('matches', selectedMatches.map((match) => match.name).join(", ") || "Нет матчей");
-
+  const handleCalculate = async () => {
     try {
-      const response = await fetch(scriptUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formData.toString(),
-      });
+        // Подробное логирование
+        console.log('Telegram объект:', window.Telegram);
+        console.log('WebApp объект:', window.Telegram?.WebApp);
+        console.log('initDataUnsafe:', window.Telegram?.WebApp?.initDataUnsafe);
+        console.log('user:', window.Telegram?.WebApp?.initDataUnsafe?.user);
+        
+        const chatId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || "6045806877";
+        console.log('Итоговый chat_id:', chatId);
+        
+        console.log('Детали отправки:');
+        console.log('Chat ID:', chatId);
+        console.log('Выбранные матчи:', selectedMatches);
+        console.log('Бюджет:', budget);
+        console.log('Уровень риска:', selectedRisk);
+        console.log('Запущено в Telegram:', !!window.Telegram?.WebApp);
+        console.log('Telegram WebApp данные:', window.Telegram?.WebApp?.initDataUnsafe);
 
-      const result = await response.json();
-      if (result.success) {
-        console.log("Данные успешно отправлены в Google Таблицу:", result);
-        alert("Данные успешно отправлены!");
-      } else {
-        console.error("Ошибка при отправке данных:", result);
-        alert("Ошибка при отправке данных.");
-      }
+        // Отправляем данные в Telegram
+        await sendMatchesToTelegram(
+            selectedMatches,
+            budget,
+            selectedRisk,
+            chatId.toString()
+        );
+        
+        // После успешной отправки переходим на страницу подтверждения
+        navigate('/request-accepted');
+        
     } catch (error) {
-      console.error("Ошибка сети или скрипта:", error);
-      alert("Не удалось отправить данные. Проверьте соединение.");
+        console.error("Ошибка при отправке данных:", error);
+        alert(error.message || "Произошла ошибка при отправке данных. Попробуйте еще раз.");
     }
-  };
-
-  const handleCalculate = () => {
-    console.log(`Риск: ${selectedRisk}, Бюджет: ${budget}`);
-    
-    // Отправляем данные в Google Таблицу
-    handleSendDataToGoogleSheet();
-    
-    // Перенаправляем на страницу подтверждения
-    navigate('/request-accepted');
   };
 
   const currentRisk = RISK_OPTIONS.find(r => r.key === selectedRisk);
@@ -141,19 +152,9 @@ const StrategyScreen = () => {
   return (
     <div className={`container ${isFocused ? 'focused' : ''}`}>
       <div className="scroll-content">
-        
-        {/* Заголовок с кнопкой "Назад" */}
-        <div className="header">
-          <button
-            className="back-button"
-            onClick={() => navigate('/')} 
-          >
-            Назад
-          </button>
-          <h1 className="header-title">Настройте свою стратегию</h1>
-        </div>
+        <h1 className="header-title">Настройте свою стратегию</h1>
         <p className="sub-header-text">
-          Выберите матчи, настройте риск и распределите <br /> бюджет
+          Настройте стратегию и проанализируйте бюджет
         </p>
 
         {/* Выбор матчей */}
@@ -168,14 +169,14 @@ const StrategyScreen = () => {
             </div>
           </button>
           <p className="hint-text">
-            Чем больше матчей, тем шире возможности прогноза, но тем выше риск.
+            Чем больше матчей, тем шире возможности прогноза.
           </p>
         </div>
 
 
         {/* Выбор уровня риска */}
         <div className="section">
-          <h2 className="section-title">Выберите уровень риска</h2>
+          <h2 className="section-title">Выберите уровень подхода</h2>
           <div className="risk-container">
             {RISK_OPTIONS.map(r => (
               <div 

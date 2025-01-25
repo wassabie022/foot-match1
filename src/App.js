@@ -34,6 +34,26 @@ function App() {
       setShowIntro(true);
     }, 2000); // Загрузка 2 секунды
 
+    // Инициализация Telegram Web App
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready(); // Сообщаем Telegram, что приложение готово
+      console.log('Telegram Web App данные:', tg.initData);
+      
+      // Установка высоты приложения
+      const setAppHeight = () => {
+        const vh = tg.viewportHeight;
+        const stableVh = tg.viewportStableHeight;
+        document.documentElement.style.setProperty('--tg-height', `${vh}px`);
+        document.documentElement.style.setProperty('--tg-stable-height', `${stableVh}px`);
+      };
+
+      setAppHeight();
+      window.addEventListener('resize', setAppHeight);
+      
+      return () => window.removeEventListener('resize', setAppHeight);
+    }
+
     return () => clearTimeout(timer);
   }, []);
 

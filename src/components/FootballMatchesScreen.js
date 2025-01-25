@@ -9,15 +9,6 @@ import { SelectedMatchesContext } from '../context/SelectedMatchesContext'; // �
 const GRADIENT_COLORS = ['rgb(175, 83, 255)', 'rgb(110, 172, 254)'];
 const Telegram = window.Telegram || TelegramEmulator.WebApp;
 
-const sheetId =
-  process.env.REACT_APP_GOOGLE_SHEETS_ID ||
-  '1R2k3qsM2ggajeBu8IrP1d-LAolneeqcTrDNV_JHqtzc';
-const apiKey =
-  process.env.REACT_APP_GOOGLE_SHEETS_API_KEY ||
-  'AIzaSyDrCLUPUlzlNoj4KJlFAnP2KZrt8MXZbUE';
-
-const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=${apiKey}`;
-
 const getDaysOfWeek = () => {
   const today = new Date();
   const days = [];
@@ -64,65 +55,69 @@ const FootballMatchesScreen = () => {
 
   const navigate = useNavigate();
 
+  const sheetId = '1R2k3qsM2ggajeBu8IrP1d-LAolneeqcTrDNV_JHqtzc';
+  const apiKey = 'AIzaSyDrCLUPUlzlNoj4KJlFAnP2KZrt8MXZbUE';
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=${apiKey}`;
+
   const fetchData = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get(url);
-      console.log('Полученные данные:', response.data);
-      const json = response.data;
+        const response = await axios.get(url);
+        console.log('Полученные данные:', response.data);
+        const json = response.data;
 
-      if (!json.values) {
-        throw new Error('Нет данных в ответе API');
-      }
-
-      const [headers, ...rows] = json.values;
-
-      const formatDateToDDMM = (dateStr) => {
-        const parts = dateStr.split('-');
-        if (parts.length === 3) {
-          const year = parts[0];
-          const month = parts[1];
-          const day = parts[2];
-          return `${day}.${month}`;
+        if (!json.values) {
+            throw new Error('Нет данных в ответе API');
         }
-        return dateStr;
-      };
 
-      const matches = rows.map((row, index) => {
-        const league = row[0] || '';
-        const date = row[1] || '';
-        const time = row[2] || '';
-        const homeTeam = row[3] || '';
-        const awayTeam = row[4] || '';
-        const homeLogo = row[6] || '';
-        const awayLogo = row[7] || '';
+        const [headers, ...rows] = json.values;
 
-        return {
-          id: `match-${index}`,
-          date: formatDateToDDMM(date),
-          time,
-          homeTeam,
-          awayTeam,
-          name: `${homeTeam} vs ${awayTeam}`, // для удобного поиска
-          league,
-          homeLogo,
-          awayLogo,
+        const formatDateToDDMM = (dateStr) => {
+            const parts = dateStr.split('-');
+            if (parts.length === 3) {
+                const year = parts[0];
+                const month = parts[1];
+                const day = parts[2];
+                return `${day}.${month}`;
+            }
+            return dateStr;
         };
-      });
 
-      console.log('Фетченные матчи:', matches);
-      setAllMatches(matches);
+        const matches = rows.map((row, index) => {
+            const league = row[0] || '';
+            const date = row[1] || '';
+            const time = row[2] || '';
+            const homeTeam = row[3] || '';
+            const awayTeam = row[4] || '';
+            const homeLogo = row[6] || '';
+            const awayLogo = row[7] || '';
 
-      // Пример начальной инициализации выбранных матчей
-      if (selectedMatches.length === 0) {
-        setSelectedMatches(matches.slice(0, 3));
-      }
+            return {
+                id: `match-${index}`,
+                date: formatDateToDDMM(date),
+                time,
+                homeTeam,
+                awayTeam,
+                name: `${homeTeam} vs ${awayTeam}`,
+                league,
+                homeLogo,
+                awayLogo,
+            };
+        });
+
+        console.log('Загруженные матчи:', matches);
+        setAllMatches(matches);
+
+        if (selectedMatches.length === 0) {
+            setSelectedMatches([]);
+        }
+
     } catch (error) {
-      console.error('Ошибка при загрузке данных', error);
-      setError(error.message);
+        console.error('Ошибка при загрузке данных', error);
+        setError(error.message);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
   };
 
