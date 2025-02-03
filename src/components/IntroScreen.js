@@ -2,7 +2,10 @@ import React from 'react';
 import './IntroScreen.css';
 
 const IntroScreen = ({ onStart }) => {
+  console.log('Рендеринг IntroScreen');
+
   const handleStart = () => {
+    console.log('Кнопка Start нажата');
     if (onStart) {
       onStart();
     }

@@ -20,9 +20,8 @@ function App() {
 
   useEffect(() => {
     const initializeApp = async () => {
-      // Устанавливаем начальное состояние загрузки
       setIsLoading(true);
-      setShowIntro(false);
+      setShowIntro(false); // Изначально скрываем интро
 
       try {
         const telegram = window.Telegram?.WebApp;
@@ -30,7 +29,7 @@ function App() {
         
         console.log('Проверяем пользователя:', userId);
         
-        // Добавляем искусственную задержку для LoadingScreen
+        // Задержка для LoadingScreen
         await new Promise(resolve => setTimeout(resolve, 2000));
         
         const status = await checkSubscriptionStatus(userId);
@@ -38,10 +37,8 @@ function App() {
         
         setSubscriptionStatus(status);
 
-        // Если подписка активна или триал, показываем интро
-        if (status.status === 'active' || status.status === 'trial') {
-          setShowIntro(true);
-        }
+        // Добавим отладочный вывод
+        console.log('Статус подписки для интро:', status.status);
       } catch (error) {
         console.error('Ошибка:', error);
       }
@@ -52,19 +49,29 @@ function App() {
 
   const handleLoadingComplete = () => {
     console.log('LoadingScreen завершён');
-    // Добавляем небольшую задержку перед сменой экрана
     setTimeout(() => {
       setIsLoading(false);
+      // Устанавливаем showIntro в true после загрузки
+      if (subscriptionStatus?.status === 'active' || subscriptionStatus?.status === 'trial') {
+        console.log('Устанавливаем showIntro в true');
+        setShowIntro(true);
+      }
     }, 500);
   };
 
   const handleIntroStart = () => {
     console.log('IntroScreen завершён');
-    // Добавляем небольшую задержку перед сменой экрана
     setTimeout(() => {
       setShowIntro(false);
     }, 300);
   };
+
+  // Добавим отладочный вывод для понимания текущего состояния
+  console.log('Текущие состояния:', {
+    isLoading,
+    showIntro,
+    subscriptionStatus: subscriptionStatus?.status
+  });
 
   return (
     <Router>
