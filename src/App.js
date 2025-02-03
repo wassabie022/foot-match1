@@ -21,26 +21,53 @@ function App() {
   useEffect(() => {
     const initializeApp = async () => {
       setIsLoading(true);
-      setShowIntro(false); // Изначально скрываем интро
+      setShowIntro(false);
 
       try {
         const telegram = window.Telegram?.WebApp;
+        // Проверяем, запущено ли приложение в Telegram
+        const isTelegramWebApp = !!telegram;
+        console.log('Запущено в Telegram WebApp:', isTelegramWebApp);
+        
         const userId = telegram?.initDataUnsafe?.user?.id || "6045806877";
+        console.log('User ID:', userId);
         
-        console.log('Проверяем пользователя:', userId);
-        
-        // Задержка для LoadingScreen
+        // Добавляем логирование initData от Telegram
+        if (isTelegramWebApp) {
+          console.log('Telegram initData:', telegram.initDataUnsafe);
+          console.log('Telegram initData raw:', telegram.initData);
+        }
+
         await new Promise(resolve => setTimeout(resolve, 2000));
         
-        const status = await checkSubscriptionStatus(userId);
-        console.log('Статус подписки:', status);
-        
+        let status;
+        if (isTelegramWebApp) {
+          // Для Telegram WebApp используем особую логику
+          try {
+            status = await checkSubscriptionStatus(userId);
+          } catch (firebaseError) {
+            console.error('Ошибка Firebase в Telegram:', firebaseError);
+            // Если Firebase не работает в Telegram, используем временный статус
+            status = { status: 'trial' };
+          }
+        } else {
+          // Для браузера используем обычную логику
+          status = await checkSubscriptionStatus(userId);
+        }
+
+        console.log('Полученный статус подписки:', status);
         setSubscriptionStatus(status);
 
-        // Добавим отладочный вывод
-        console.log('Статус подписки для интро:', status.status);
+        if (status.status === 'active' || status.status === 'trial') {
+          console.log('Устанавливаем showIntro в true');
+          setShowIntro(true);
+        }
+
       } catch (error) {
-        console.error('Ошибка:', error);
+        console.error('Общая ошибка инициализации:', error);
+        // В случае ошибки устанавливаем пробный статус
+        setSubscriptionStatus({ status: 'trial' });
+        setShowIntro(true);
       }
     };
 

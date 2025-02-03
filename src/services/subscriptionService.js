@@ -1,46 +1,43 @@
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db } from '../firebase';
 
 // Проверка статуса подписки пользователя
 export const checkSubscriptionStatus = async (userId) => {
+  console.log('Начало проверки подписки для userId:', userId);
+  
   try {
-    const userDocRef = doc(db, 'users', userId);
-    const userDoc = await getDoc(userDocRef);
-
-    if (!userDoc.exists()) {
-      // Пользователь впервые в приложении - даём пробный период
-      await setDoc(userDocRef, {
-        userId,
-        trialUsed: true,
-        trialStartDate: serverTimestamp(),
-        trialEndDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 дней
-        subscriptionStatus: 'trial',
-        createdAt: serverTimestamp()
-      });
-      return { status: 'trial', isNew: true };
+    if (!userId) {
+      console.log('userId не предоставлен');
+      return { status: 'trial' };
     }
 
-    const userData = userDoc.data();
+    // Преобразуем userId в строку и очищаем от спецсимволов
+    const userIdString = String(userId).trim();
+    console.log('Очищенный userId:', userIdString);
+
+    const userDocRef = doc(db, 'subscriptions', userIdString);
+    console.log('Пытаемся получить документ из Firebase');
     
-    // Проверяем активную подписку
-    if (userData.subscriptionStatus === 'active') {
-      if (new Date(userData.subscriptionEndDate.toDate()) > new Date()) {
-        return { status: 'active' };
-      }
+    const userDocSnap = await getDoc(userDocRef);
+    console.log('Документ получен, существует:', userDocSnap.exists());
+
+    if (!userDocSnap.exists()) {
+      console.log('Документ не найден, возвращаем trial статус');
+      return { status: 'trial' };
     }
 
-    // Проверяем пробный период
-    if (userData.subscriptionStatus === 'trial') {
-      if (new Date(userData.trialEndDate.toDate()) > new Date()) {
-        return { status: 'trial' };
-      }
-    }
+    const userData = userDocSnap.data();
+    console.log('Полученные данные:', userData);
 
-    // Если нет активной подписки и пробный период использован/закончился
-    return { status: 'expired' };
+    return {
+      status: userData.status || 'trial',
+      expiryDate: userData.expiryDate
+    };
+
   } catch (error) {
     console.error('Ошибка при проверке подписки:', error);
-    throw error;
+    // В случае ошибки Firebase возвращаем trial статус
+    return { status: 'trial' };
   }
 };
 
