@@ -8,16 +8,16 @@ const LoadingScreen = ({ onLoadingComplete }) => {
   useEffect(() => {
     const duration = 5000; // 5 секунд
     const intervalTime = 50; // обновление каждые 50 мс
-    const increment = (80 / duration) * intervalTime; 
+    const increment = (100 / duration) * intervalTime; // Увеличили до 100%
     
     const timer = setInterval(() => {
       setProgress(prev => {
         const newProgress = prev + increment;
-        if (newProgress >= 80) {
+        if (newProgress >= 100) { // Изменили до 100%
           clearInterval(timer);
           // Когда загрузка будет завершена, вызываем колбэк
           onLoadingComplete(); 
-          return 80;
+          return 100;
         }
         return newProgress;
       });

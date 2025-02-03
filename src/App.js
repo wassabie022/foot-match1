@@ -13,32 +13,37 @@ import { checkSubscriptionStatus } from './services/subscriptionService';
 import './App.css'; // Ваш общий CSS, если есть
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true); // Экран загрузки
-  const [showIntro, setShowIntro] = useState(false); // Экран интро
+  const [isLoading, setIsLoading] = useState(true);
+  const [showIntro, setShowIntro] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
-  const [chatId, setChatId] = useState(null); // Сохраняем chat ID
+  const [chatId, setChatId] = useState(null);
 
   useEffect(() => {
     const initializeApp = async () => {
+      // Устанавливаем начальное состояние загрузки
       setIsLoading(true);
+      setShowIntro(false);
+
       try {
         const telegram = window.Telegram?.WebApp;
-        const userId = telegram?.initDataUnsafe?.user?.id || "6045806877"; // для тестирования
+        const userId = telegram?.initDataUnsafe?.user?.id || "6045806877";
         
         console.log('Проверяем пользователя:', userId);
+        
+        // Добавляем искусственную задержку для LoadingScreen
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
         const status = await checkSubscriptionStatus(userId);
         console.log('Статус подписки:', status);
         
         setSubscriptionStatus(status);
 
+        // Если подписка активна или триал, показываем интро
         if (status.status === 'active' || status.status === 'trial') {
           setShowIntro(true);
         }
       } catch (error) {
         console.error('Ошибка:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -46,14 +51,19 @@ function App() {
   }, []);
 
   const handleLoadingComplete = () => {
-    console.log('LoadingScreen завершён'); // Проверка
-    setIsLoading(false);
-    setShowIntro(true);
+    console.log('LoadingScreen завершён');
+    // Добавляем небольшую задержку перед сменой экрана
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   };
 
   const handleIntroStart = () => {
-    console.log('IntroScreen завершён'); // Проверка
-    setShowIntro(false);
+    console.log('IntroScreen завершён');
+    // Добавляем небольшую задержку перед сменой экрана
+    setTimeout(() => {
+      setShowIntro(false);
+    }, 300);
   };
 
   return (
